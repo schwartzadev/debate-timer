@@ -23,7 +23,7 @@ public class Temp extends Application {
     }
 
 
-    private static final Integer STARTTIME = 100;
+    private static final Integer STARTTIME = 1000;
     private Timeline timeline;
     private Label label = new Label();
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
@@ -31,9 +31,10 @@ public class Temp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+//        primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.setTitle("Policy Timer");
+//        primaryStage.setAlwaysOnTop(true);
         Group root = new Group();
-//        Scene scene = new Scene(root, 600, 600); // dimensions of window
         Scene scene = new Scene(root); // dimensions of window
         try {
             scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
@@ -42,18 +43,28 @@ public class Temp extends Application {
         }
 
         HBox hbox = new HBox();
-
-        // Bind the label text property to the timeSeconds property
-        label.textProperty().bind(timeSeconds.asString());
+        label.textProperty().bind(timeSeconds.asString()); // Bind the label text property to the timeSeconds property
         VBox btns = new VBox();
         btns.setSpacing(10);
+        Button reset = new Button("reset");
+        reset.getStyleClass().add("reset");
+        reset.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                // somehow stop other event threads?
+                label.setTextFill(Color.GREEN);
+            }
+        });
 
+        VBox labelBox = new VBox();
         btns.getChildren().addAll(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX"));
         btns.setAlignment(Pos.TOP_CENTER);
         label.setAlignment(Pos.TOP_CENTER);
-        hbox.getChildren().addAll(btns, label);
+        labelBox.getChildren().addAll(label, reset);
+        hbox.getChildren().addAll(btns, labelBox);
         root.getChildren().addAll(hbox);
-
+        primaryStage.setResizable(false); // rm size changer
+        primaryStage.setY(0); // top of screen
+        primaryStage.setX(0); // left corner
         primaryStage.setScene(scene);
 //        primaryStage.setOpacity(.8);
         primaryStage.show();

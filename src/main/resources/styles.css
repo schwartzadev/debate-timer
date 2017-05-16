@@ -10,3 +10,10 @@
    -fx-font: bold 5em "Arial";
    -fx-padding: 10;
 }
+
+.reset {
+    -fx-text-fill: #BBBBBB;
+    -fx-padding: -30 0 0 250;
+    -fx-border-insets: 0;
+    -fx-background-color: white;
+}
