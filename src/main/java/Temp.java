@@ -43,24 +43,19 @@ public class Temp extends Application {
 
         HBox hbox = new HBox();
 
-
         // Bind the label text property to the timeSeconds property
         label.textProperty().bind(timeSeconds.asString());
-
-
         VBox btns = new VBox();
         btns.setSpacing(10);
-        Button btnC = buttonFactory(8, "C");
-        Button btnR = buttonFactory(5, "R");
-        Button btnCX = buttonFactory(3, "CX");
 
-        btns.getChildren().addAll(btnC, btnR, btnCX);
+        btns.getChildren().addAll(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX"));
         btns.setAlignment(Pos.TOP_CENTER);
         label.setAlignment(Pos.TOP_CENTER);
         hbox.getChildren().addAll(btns, label);
         root.getChildren().addAll(hbox);
+
         primaryStage.setScene(scene);
-        primaryStage.setOpacity(.8);
+//        primaryStage.setOpacity(.8);
         primaryStage.show();
     }
 
