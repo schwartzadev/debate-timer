@@ -11,12 +11,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.text.SimpleDateFormat;
 
 public class Temp extends Application {
     public static void main(String[] args) {
@@ -36,19 +34,19 @@ public class Temp extends Application {
         Group root = new Group();
         Scene scene = new Scene(root, 600, 1000);
 
-        VBox vbox = new VBox();
-        vbox.setPadding(new Insets(10));
-        vbox.setSpacing(8);
+        HBox buttons = new HBox();
+        buttons.setPadding(new Insets(10));
+        buttons.setSpacing(8);
 
         // Bind the label text property to the timeSeconds property
         label.textProperty().bind(timeSeconds.asString());
         label.setStyle("-fx-font-size: 10em;");
 
-        vbox.getChildren().addAll(buttonMaker(300, "top"), buttonMaker(50, "mid"), buttonMaker(3, "btm"), label);
+        buttons.getChildren().addAll(buttonMaker(300, "top"), buttonMaker(50, "mid"), buttonMaker(3, "btm"));
 
-        root.getChildren().addAll(vbox);
+        root.getChildren().addAll(buttons, label);
         primaryStage.setScene(scene);
-        primaryStage.setOpacity(.8);
+//        primaryStage.setOpacity(.8);
         primaryStage.show();
     }
 
@@ -71,7 +69,7 @@ public class Temp extends Application {
                 timeline.setOnFinished(new EventHandler<ActionEvent>(){
                     public void handle(ActionEvent args) {
                         label.setTextFill(Color.RED);
-                        label.setText("done");
+                        label.setText("done"); // breaks from the int binding
                     }
                 });
             }
