@@ -73,11 +73,16 @@ public class CxTimer extends Application {
         primaryStage.show();
     }
 
-    final ChangeListener changeListener = new ChangeListener<Number>() { // make lambda
+     private ChangeListener changeListener = new ChangeListener<Number>() { // make lambda
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        DateFormat df = new SimpleDateFormat("mm:ss");
-        label.setText(df.format((timeSeconds.getValue() * 1000)));
-    }};
+            if (newValue.equals(30)) {
+                label.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
+            } else if (newValue.equals(0)) {
+                label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+            }
+            DateFormat df = new SimpleDateFormat("mm:ss");
+            label.setText(df.format((timeSeconds.getValue() * 1000)));
+        }};
 
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
@@ -94,10 +99,7 @@ public class CxTimer extends Application {
             timeline.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(time),
                             new KeyValue(timeSeconds, 0)));
-            timeline.playFromStart();
-            timeline.setOnFinished((ActionEvent args) -> {
-                label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
-            });
+            timeline.play();
         });
         return button1;
     }
