@@ -51,7 +51,7 @@ public class CxTimer extends Application {
         HBox hbox = new HBox(); // box for the boxes
         timeSeconds.addListener(changeListener); // add listener to time var for label
         VBox btns = new VBox(); // box for the buttons
-        btns.setSpacing(5);
+        btns.setSpacing(10);
         Button reset = new Button("reset");
         reset.getStyleClass().add("reset");
         reset.setOnAction(new EventHandler<ActionEvent>() {
@@ -59,7 +59,6 @@ public class CxTimer extends Application {
                 timeline.stop();
                 label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 timeSeconds.setValue(0);
-                // somehow stop other event threads?
             }
         });
 
@@ -75,42 +74,34 @@ public class CxTimer extends Application {
         primaryStage.setY(0); // top of screen
         primaryStage.setX(0); // left corner
         primaryStage.setScene(scene);
-        primaryStage.setOpacity(.8); // slightly transparent
+        primaryStage.setOpacity(.9); // slightly transparent
         primaryStage.show();
     }
 
-    final ChangeListener changeListener = new ChangeListener() {
-        public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
-//        public void changed(ObservableValue observableValue, Number oldValue, Number newValue) {
-            DateFormat df = new SimpleDateFormat("mm:ss");
-            label.setText(df.format((timeSeconds.getValue() * 1000)));
-        }
+    private ChangeListener changeListener = (ObservableValue observable, Object oldValue, Object newValue) -> {
+        DateFormat df = new SimpleDateFormat("mm:ss");
+        label.setText(df.format((timeSeconds.getValue() * 1000)));
     };
 
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
         button1.setText(name);
         final int time = (int)t*60;
-        button1.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
-                label.setTextFill(Color.BLACK);
-                if (timeline != null) {
-                    timeline.stop();
-                }
-                timeSeconds.set(time);
-                timeline = new Timeline();
-                timeline.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(time),
-                                new KeyValue(timeSeconds, 0)));
-                timeline.playFromStart();
-                timeline.setOnFinished(new EventHandler<ActionEvent>(){
-                    public void handle(ActionEvent args) {
-                        label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
-//                        label.setText("done"); // broken
-                    }
-                });
+        button1.setOnAction((event) -> {
+            label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
+            label.setTextFill(Color.BLACK);
+            if (timeline != null) {
+                timeline.stop();
             }
+            timeSeconds.set(time);
+            timeline = new Timeline();
+            timeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(time),
+                            new KeyValue(timeSeconds, 0)));
+            timeline.playFromStart();
+            timeline.setOnFinished((ActionEvent args) -> {
+                label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+            });
         });
         return button1;
     }
