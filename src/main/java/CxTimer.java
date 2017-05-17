@@ -3,12 +3,10 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -30,10 +28,9 @@ public class CxTimer extends Application {
     }
 
 
-    private static final Integer STARTTIME = 0;
     private Timeline timeline;
     private Label label = new Label();
-    private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
+    private IntegerProperty timeSeconds = new SimpleIntegerProperty(0);
 
 
     @Override
@@ -54,13 +51,11 @@ public class CxTimer extends Application {
         btns.setSpacing(10);
         Button reset = new Button("reset");
         reset.getStyleClass().add("reset");
-        reset.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
+        reset.setOnAction((event) -> {
                 timeline.stop();
                 label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 timeSeconds.setValue(0);
-            }
-        });
+            });
 
         label.setText("00:00"); // init label with text
         VBox labelBox = new VBox(); // box for label, reset button
@@ -78,10 +73,11 @@ public class CxTimer extends Application {
         primaryStage.show();
     }
 
-    private ChangeListener changeListener = (ObservableValue observable, Object oldValue, Object newValue) -> {
+    final ChangeListener changeListener = new ChangeListener<Number>() { // make lambda
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         DateFormat df = new SimpleDateFormat("mm:ss");
         label.setText(df.format((timeSeconds.getValue() * 1000)));
-    };
+    }};
 
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
