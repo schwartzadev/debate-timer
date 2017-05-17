@@ -6,7 +6,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -31,6 +30,11 @@ public class CxTimer extends Application {
     private Timeline timeline;
     private Label label = new Label();
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(0);
+    private IntegerProperty affPrep = new SimpleIntegerProperty(0);
+    private IntegerProperty negPrep = new SimpleIntegerProperty(0);
+    private Timeline tl = new Timeline();
+    private boolean bool = false;
+    private int count;
 
 
     @Override
@@ -46,13 +50,17 @@ public class CxTimer extends Application {
         }
         primaryStage.getIcons().add(new Image("icon.png"));
         HBox hbox = new HBox(); // box for the boxes
-        timeSeconds.addListener(changeListener); // add listener to time var for label
+        timeSeconds.addListener(timerCL); // add listener to time var for label
         VBox btns = new VBox(); // box for the buttons
         btns.setSpacing(10);
         Button reset = new Button("reset");
         reset.getStyleClass().add("reset");
         reset.setOnAction((event) -> {
+            try {
                 timeline.stop();
+            } catch (NullPointerException npe) {
+                // do nothing -- should only happen is timeline DNE
+            }
                 label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 timeSeconds.setValue(0);
             });
@@ -62,7 +70,9 @@ public class CxTimer extends Application {
         btns.getChildren().addAll(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX"));
         btns.setAlignment(Pos.TOP_CENTER);
         label.setAlignment(Pos.TOP_CENTER);
-        labelBox.getChildren().addAll(label, reset);
+        HBox prep = new HBox(prepFactory(300, affPrep), prepFactory(300, negPrep));
+        prep.setSpacing(20);
+        labelBox.getChildren().addAll(label, reset, prep);
         hbox.getChildren().addAll(btns, labelBox);
         root.getChildren().addAll(hbox);
         primaryStage.setResizable(false); // rm size changer
@@ -73,7 +83,7 @@ public class CxTimer extends Application {
         primaryStage.show();
     }
 
-     private ChangeListener changeListener = new ChangeListener<Number>() { // make lambda
+     private ChangeListener timerCL = new ChangeListener<Number>() { // make lambda
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
             if (newValue.equals(30)) {
                 label.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
@@ -83,6 +93,43 @@ public class CxTimer extends Application {
             DateFormat df = new SimpleDateFormat("mm:ss");
             label.setText(df.format((timeSeconds.getValue() * 1000)));
         }};
+
+    private Button prepFactory(int t, IntegerProperty ip){
+        count = t;
+        DateFormat df = new SimpleDateFormat("mm:ss");
+        Button btn = new Button();
+        final int time = t;
+        ip.setValue(time);
+        btn.setText(df.format(ip.getValue()*1000));
+
+        ChangeListener prepCL = new ChangeListener<Number>() { // make lambda
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (newValue.equals(30)) {
+                    btn.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
+                } else if (newValue.equals(0)) {
+                    btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+                }
+                DateFormat df = new SimpleDateFormat("mm:ss");
+                btn.setText(df.format((ip.getValue() * 1000)));
+            }};
+
+        ip.addListener(prepCL);
+        btn.setOnAction((event) -> {
+            if (ip.getValue() == t || bool) { // make if timeline is not running
+                ip.set(count);
+                tl.getKeyFrames().add(
+                        new KeyFrame(Duration.seconds(count),
+                                new KeyValue(ip, 0)));
+                bool = false;
+                tl.play();
+            } else {
+                count = ip.intValue();
+                tl.stop();
+                bool = true;
+            }
+        });
+        return btn;
+    }
 
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
