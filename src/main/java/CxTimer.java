@@ -3,6 +3,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,7 +38,7 @@ public class CxTimer extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Policy Timer");
+        primaryStage.setTitle("CX Timer");
         primaryStage.setAlwaysOnTop(true);
         Group root = new Group();
         Scene scene = new Scene(root); // dimensions of window
@@ -46,7 +47,7 @@ public class CxTimer extends Application {
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
-//        primaryStage.getIcons().add(new Image("file:icon.png")); // TODO: make an icon
+        primaryStage.getIcons().add(new Image("icon.png"));
         HBox hbox = new HBox(); // box for the boxes
         timeSeconds.addListener(changeListener); // add listener to time var for label
         VBox btns = new VBox(); // box for the buttons
@@ -55,6 +56,7 @@ public class CxTimer extends Application {
         reset.getStyleClass().add("reset");
         reset.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
+                timeline.stop();
                 label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 timeSeconds.setValue(0);
                 // somehow stop other event threads?
@@ -79,6 +81,7 @@ public class CxTimer extends Application {
 
     final ChangeListener changeListener = new ChangeListener() {
         public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+//        public void changed(ObservableValue observableValue, Number oldValue, Number newValue) {
             DateFormat df = new SimpleDateFormat("mm:ss");
             label.setText(df.format((timeSeconds.getValue() * 1000)));
         }
