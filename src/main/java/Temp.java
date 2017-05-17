@@ -31,7 +31,6 @@ public class Temp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-//        primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.setTitle("Policy Timer");
 //        primaryStage.setAlwaysOnTop(true);
         Group root = new Group();
@@ -50,8 +49,9 @@ public class Temp extends Application {
         reset.getStyleClass().add("reset");
         reset.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
+                label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
+                timeSeconds.setValue(0);
                 // somehow stop other event threads?
-                label.setTextFill(Color.GREEN);
             }
         });
 
@@ -66,12 +66,11 @@ public class Temp extends Application {
         primaryStage.setY(0); // top of screen
         primaryStage.setX(0); // left corner
         primaryStage.setScene(scene);
-//        primaryStage.setOpacity(.8);
+        primaryStage.setOpacity(.8); // slightly transparent
         primaryStage.show();
     }
 
     private Button buttonFactory(double t, String name){
-//        final IntegerProperty timeProp = new SimpleIntegerProperty(time);
         Button button1 = new Button();
         button1.setText(name);
         final int time = (int)t*60;
@@ -89,7 +88,7 @@ public class Temp extends Application {
                 timeline.playFromStart();
                 timeline.setOnFinished(new EventHandler<ActionEvent>(){
                     public void handle(ActionEvent args) {
-                        label.setTextFill(Color.RED);
+                        label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
 //                        label.setText("done"); // broken
                     }
                 });
