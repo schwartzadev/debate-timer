@@ -49,10 +49,8 @@ public class CxTimer extends Application {
             npe.printStackTrace();
         }
         primaryStage.getIcons().add(new Image("icon.png"));
-        HBox hbox = new HBox(); // box for the boxes
         timeSeconds.addListener(timerCL); // add listener to time var for label
-        VBox btns = new VBox(); // box for the buttons
-        btns.setSpacing(10);
+
         Button reset = new Button("reset");
         reset.getStyleClass().add("reset");
         reset.setOnAction((event) -> {
@@ -64,17 +62,22 @@ public class CxTimer extends Application {
                 label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 timeSeconds.setValue(0);
             });
-
         label.setText("00:00"); // init label with text
-        VBox labelBox = new VBox(); // box for label, reset button
-        btns.getChildren().addAll(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX"));
-        btns.setAlignment(Pos.TOP_CENTER);
         label.setAlignment(Pos.TOP_CENTER);
+
+        VBox btns = new VBox(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX")); // box for the buttons
+        btns.setSpacing(10);
+        btns.setAlignment(Pos.TOP_CENTER);
+
         HBox prep = new HBox(prepFactory(300, affPrep), prepFactory(300, negPrep));
         prep.setSpacing(20);
-        labelBox.getChildren().addAll(label, reset, prep);
-        hbox.getChildren().addAll(btns, labelBox);
+
+        VBox labelBox = new VBox(label, reset, prep); // box for label, reset button
+        HBox hbox = new HBox(btns, labelBox); // box for the boxes
+
         root.getChildren().addAll(hbox);
+
+        // build window
         primaryStage.setResizable(false); // rm size changer
         primaryStage.setY(0); // top of screen
         primaryStage.setX(0); // left corner
