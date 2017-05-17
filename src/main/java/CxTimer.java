@@ -4,6 +4,8 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -11,19 +13,23 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Temp extends Application {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+public class CxTimer extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
 
 
-    private static final Integer STARTTIME = 1000;
+    private static final Integer STARTTIME = 0;
     private Timeline timeline;
     private Label label = new Label();
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
@@ -32,7 +38,7 @@ public class Temp extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Policy Timer");
-//        primaryStage.setAlwaysOnTop(true);
+        primaryStage.setAlwaysOnTop(true);
         Group root = new Group();
         Scene scene = new Scene(root); // dimensions of window
         try {
@@ -40,11 +46,11 @@ public class Temp extends Application {
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
-
-        HBox hbox = new HBox();
-        label.textProperty().bind(timeSeconds.asString()); // Bind the label text property to the timeSeconds property
-        VBox btns = new VBox();
-        btns.setSpacing(10);
+//        primaryStage.getIcons().add(new Image("file:icon.png")); // TODO: make an icon
+        HBox hbox = new HBox(); // box for the boxes
+        timeSeconds.addListener(changeListener); // add listener to time var for label
+        VBox btns = new VBox(); // box for the buttons
+        btns.setSpacing(5);
         Button reset = new Button("reset");
         reset.getStyleClass().add("reset");
         reset.setOnAction(new EventHandler<ActionEvent>() {
@@ -55,7 +61,8 @@ public class Temp extends Application {
             }
         });
 
-        VBox labelBox = new VBox();
+        label.setText("00:00"); // init label with text
+        VBox labelBox = new VBox(); // box for label, reset button
         btns.getChildren().addAll(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX"));
         btns.setAlignment(Pos.TOP_CENTER);
         label.setAlignment(Pos.TOP_CENTER);
@@ -70,12 +77,20 @@ public class Temp extends Application {
         primaryStage.show();
     }
 
+    final ChangeListener changeListener = new ChangeListener() {
+        public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+            DateFormat df = new SimpleDateFormat("mm:ss");
+            label.setText(df.format((timeSeconds.getValue() * 1000)));
+        }
+    };
+
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
         button1.setText(name);
         final int time = (int)t*60;
         button1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
+                label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
                 label.setTextFill(Color.BLACK);
                 if (timeline != null) {
                     timeline.stop();
