@@ -5,7 +5,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.util.Duration;
 
 import java.text.DateFormat;
@@ -19,12 +22,16 @@ import java.text.SimpleDateFormat;
 
     private Team team;
     private boolean bool = false;
-    private int count;
     int t;
     private DateFormat df = new SimpleDateFormat("mm:ss");
     private Button btn = new Button();
     private Timeline tl = new Timeline();
-    private IntegerProperty ip = new SimpleIntegerProperty(0);
+
+     public IntegerProperty ipProperty() {
+         return ip;
+     }
+
+     private IntegerProperty ip = new SimpleIntegerProperty(0);
 
      PrepBtnFactory(int t, Team team) {
          this.t = t;
@@ -41,7 +48,6 @@ import java.text.SimpleDateFormat;
 
     Button make() {
         ip.setValue(t);
-        count = t;
         btn.prefWidth(20);
         btn.setText(df.format(ip.getValue()*1000));
         btn.getStyleClass().add("prep");
@@ -64,14 +70,14 @@ import java.text.SimpleDateFormat;
         ip.addListener(prepCL);
         btn.setOnAction((event) -> {
             if (ip.getValue() == t || bool) { // make if timeline is not running
-                ip.set(count);
+                ip.set(t);
                 tl.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(count),
+                        new KeyFrame(Duration.seconds(t),
                                 new KeyValue(ip, 0)));
                 bool = false;
                 tl.play();
             } else {
-                count = ip.intValue();
+                t = ip.intValue();
                 tl.stop();
                 bool = true;
             }
@@ -103,5 +109,17 @@ import java.text.SimpleDateFormat;
 
      void colorNeg() {
          btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
+     }
+
+     void setIpVal(int val) {
+         ip.setValue(val);
+     }
+
+     public void setT(int t) {
+         this.t = t;
+     }
+
+     public void setBool(boolean bool) {
+         this.bool = bool;
      }
 }

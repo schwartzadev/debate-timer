@@ -6,10 +6,13 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -97,13 +100,6 @@ public class CxTimer extends Application {
         Button prepReset = resetFactory();
         prepReset.setStyle("-fx-padding: 0 0 0 73;");
         prepReset.setOnAction((event) -> {
-            try {
-                // stop both tls for the buttons
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-                // do nothing -- should only happen is timeline DNE
-            }
-
 //            aff.recolor(); // fix formatting for both TODO fix .recolor()
             aff.colorAff(); // fix formatting for both
             neg.colorNeg();
@@ -112,7 +108,28 @@ public class CxTimer extends Application {
             aff.resetValue(); // reset number for both
             neg.resetValue();
         });
-        VBox prep = new VBox(prepBtns, prepReset);
+        ObservableList<Integer> times = FXCollections.observableArrayList(
+                5, // list of possible prep time amounts
+                7,
+                8,
+                10);
+
+        ComboBox comboBox = new ComboBox<Integer>(times);
+        comboBox.getSelectionModel().selectFirst();
+        comboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue ov, Object t, Object t1) {
+                int selection = (int)t1*60;
+                aff.setIpVal(selection); // if selector changes, set ip value of each to the new time
+                neg.setIpVal(selection);
+                aff.setT(selection); // TODO RESOLVE THIS!! when prep timer is stopped, reset fails??
+                neg.setT(selection);
+                aff.setBool(false);
+                neg.setBool(false);
+            }
+        });
+
+        VBox prep = new VBox(prepBtns, prepReset, comboBox);
         return prep;
     }
 
