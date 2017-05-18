@@ -26,7 +26,6 @@ public class CxTimer extends Application {
         Application.launch(args);
     }
 
-
     private Timeline timeline;
     private Label label = new Label();
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(0);
@@ -58,10 +57,10 @@ public class CxTimer extends Application {
         label.setAlignment(Pos.TOP_CENTER);
 
         VBox btns = new VBox(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX")); // box for the buttons
-        btns.setSpacing(10);
+        btns.setSpacing(12);
         btns.setAlignment(Pos.TOP_CENTER);
 
-        VBox prep = prepFactory(35);
+        VBox prep = prepFactory(300);
 
         VBox labelBox = new VBox(label, timerReset, prep); // box for label, reset button
         HBox hbox = new HBox(btns, labelBox); // box for the boxes
@@ -89,13 +88,14 @@ public class CxTimer extends Application {
         }};
 
     private VBox prepFactory(int t){
-        prepBtnFactory aff = new prepBtnFactory(t);
-        aff.colorAff();
-        prepBtnFactory neg = new prepBtnFactory(t);
-        neg.colorNeg();
+        PrepBtnFactory aff = new PrepBtnFactory(t, PrepBtnFactory.Team.AFF);
+        PrepBtnFactory neg = new PrepBtnFactory(t, PrepBtnFactory.Team.NEG);
         HBox prepBtns = new HBox(aff.make(), neg.make());
-        prepBtns.setSpacing(20);
+        prepBtns.setSpacing(30);
+        prepBtns.setStyle("-fx-padding: 15 0 0 0;");
+        prepBtns.setAlignment(Pos.BOTTOM_CENTER);
         Button prepReset = resetFactory();
+        prepReset.setStyle("-fx-padding: 0 0 0 73;");
         prepReset.setOnAction((event) -> {
             try {
                 // stop both tls for the buttons
@@ -104,6 +104,7 @@ public class CxTimer extends Application {
                 // do nothing -- should only happen is timeline DNE
             }
 
+//            aff.recolor(); // fix formatting for both TODO fix .recolor()
             aff.colorAff(); // fix formatting for both
             neg.colorNeg();
             aff.stop(); // stop both timelines
@@ -111,7 +112,6 @@ public class CxTimer extends Application {
             aff.resetValue(); // reset number for both
             neg.resetValue();
         });
-
         VBox prep = new VBox(prepBtns, prepReset);
         return prep;
     }
@@ -125,6 +125,7 @@ public class CxTimer extends Application {
     private Button buttonFactory(double t, String name){
         Button button1 = new Button();
         button1.setText(name);
+        button1.setMaxWidth(Double.MAX_VALUE);
         final int time = (int)t*60;
         button1.setOnAction((event) -> {
             label.setStyle("-fx-text-fill: black; -fx-background-color: white;");

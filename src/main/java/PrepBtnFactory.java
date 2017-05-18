@@ -11,12 +11,13 @@ import javafx.util.Duration;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
- class prepBtnFactory {
-    prepBtnFactory(int t) {
-        this.t = t;
+ class PrepBtnFactory {
+    enum Team {
+        AFF,
+        NEG
     }
 
-    // TODO fix all of these private vars, put into prepFactory
+    private Team team;
     private boolean bool = false;
     private int count;
     int t;
@@ -24,16 +25,37 @@ import java.text.SimpleDateFormat;
     private Button btn = new Button();
     private Timeline tl = new Timeline();
     private IntegerProperty ip = new SimpleIntegerProperty(0);
+
+     PrepBtnFactory(int t, Team team) {
+         this.t = t;
+         switch (team) {
+             case AFF:
+                 btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
+                 break;
+             case NEG:
+                 btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
+                 break;
+         }
+//         this.recolor();
+     }
+
     Button make() {
         ip.setValue(t);
         count = t;
+        btn.prefWidth(20);
         btn.setText(df.format(ip.getValue()*1000));
         btn.getStyleClass().add("prep");
         ChangeListener prepCL = new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.equals(0)) {
-//                    btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
-                    btn.setStyle("-fx-text-fill: white; -fx-background-color: #0050FF;");
+                    switch (team) {
+                        case AFF:
+                            btn.setStyle("-fx-text-fill: white; -fx-background-color: #0050FF;");
+                            break;
+                        case NEG:
+                            btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+                            break;
+                    }
                 }
                 DateFormat df = new SimpleDateFormat("mm:ss");
                 btn.setText(df.format((ip.getValue() * 1000)));
@@ -61,15 +83,25 @@ import java.text.SimpleDateFormat;
         ip.setValue(t);
     }
 
-    void colorAff() {
-        btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
-    }
-
-    void colorNeg() {
-        btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
-    }
-
     void stop() {
         tl.stop();
     }
+
+    void recolor() {
+        switch (team) {
+            case AFF:
+                btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
+                break;
+            case NEG:
+                btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
+                break;
+        }
+    }
+     void colorAff() {
+         btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
+     }
+
+     void colorNeg() {
+         btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
+     }
 }
