@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -59,8 +60,8 @@ public class CxTimer extends Application {
         VBox btns = new VBox(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX")); // box for the buttons
         btns.setSpacing(12);
         btns.setAlignment(Pos.TOP_CENTER);
-
-        VBox prep = prepFactory(300);
+        PrepFactory prepFactory = new PrepFactory(300);
+        VBox prep = prepFactory.getContainer();
 
         VBox labelBox = new VBox(label, timerReset, prep); // box for label, reset button
         HBox hbox = new HBox(btns, labelBox); // box for the boxes
@@ -86,35 +87,6 @@ public class CxTimer extends Application {
             DateFormat df = new SimpleDateFormat("mm:ss");
             label.setText(df.format((timeSeconds.getValue() * 1000)));
         }};
-
-    private VBox prepFactory(int t){
-        PrepBtnFactory aff = new PrepBtnFactory(t, PrepBtnFactory.Team.AFF);
-        PrepBtnFactory neg = new PrepBtnFactory(t, PrepBtnFactory.Team.NEG);
-        HBox prepBtns = new HBox(aff.make(), neg.make());
-        prepBtns.setSpacing(30);
-        prepBtns.setStyle("-fx-padding: 15 0 0 0;");
-        prepBtns.setAlignment(Pos.BOTTOM_CENTER);
-        Button prepReset = resetFactory();
-        prepReset.setStyle("-fx-padding: 0 0 0 73;");
-        prepReset.setOnAction((event) -> {
-            try {
-                // stop both tls for the buttons
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-                // do nothing -- should only happen is timeline DNE
-            }
-
-//            aff.recolor(); // fix formatting for both TODO fix .recolor()
-            aff.colorAff(); // fix formatting for both
-            neg.colorNeg();
-            aff.stop(); // stop both timelines
-            neg.stop();
-            aff.resetValue(); // reset number for both
-            neg.resetValue();
-        });
-        VBox prep = new VBox(prepBtns, prepReset);
-        return prep;
-    }
 
     private Button resetFactory() {
         Button reset = new Button("reset");
