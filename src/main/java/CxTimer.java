@@ -6,6 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -59,6 +60,7 @@ public class CxTimer extends Application {
 
         VBox btns = new VBox(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX")); // box for the buttons
         btns.setSpacing(12);
+        btns.setPadding(new Insets(15,0,0,2));
         btns.setAlignment(Pos.TOP_CENTER);
         PrepFactory prepFactory = new PrepFactory(300);
         VBox prep = prepFactory.getContainer();

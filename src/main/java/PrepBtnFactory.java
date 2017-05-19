@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 import java.text.DateFormat;
@@ -20,7 +21,7 @@ import java.text.SimpleDateFormat;
     private Team team;
     private boolean bool = false;
     private int count;
-    int t;
+    private int t;
     private DateFormat df = new SimpleDateFormat("mm:ss");
     private Button btn = new Button();
     private Timeline tl = new Timeline();
@@ -81,6 +82,14 @@ import java.text.SimpleDateFormat;
 
     void resetValue() {
         ip.setValue(t);
+    }
+
+    void changeStartValue(int length) {
+         this.stop();
+         t = length*60;
+         count = length*60;
+         ip.setValue(length*60);
+         this.make();
     }
 
     void stop() {
