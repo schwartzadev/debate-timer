@@ -14,16 +14,12 @@ class PrepFactory {
     private VBox container;
     private PrepBtnFactory aff;
     private PrepBtnFactory neg;
-    private Button prepReset;
     private TextField textField;
-    private int length;
     PrepFactory(int length) {
-        this.length = length;
         aff = new PrepBtnFactory(length, PrepBtnFactory.Team.AFF);
         neg = new PrepBtnFactory(length, PrepBtnFactory.Team.NEG);
-        prepReset = resetFactory();
+        Button prepReset = resetFactory();
         textField = new TextField();
-//        textField.setPrefWidth(20);
         textField.setMaxSize(30,10);
         textField.setText("5");
         textField.setFont(Font.font("Arial", FontWeight.NORMAL, 10));
@@ -33,13 +29,6 @@ class PrepFactory {
         prepBtns.setAlignment(Pos.BOTTOM_CENTER);
         prepReset.setStyle("-fx-padding: 0 0 0 35;");
         prepReset.setOnAction((event) -> {
-            try {
-                // stop both tls for the buttons
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-                // do nothing -- should only happen is timeline DNE
-            }
-//            aff.recolor(); // fix formatting for both TODO fix .recolor()
             aff.colorAff(); // fix formatting for both
             neg.colorNeg();
             aff.stop(); // stop both timelines
@@ -52,9 +41,7 @@ class PrepFactory {
         resetAndTF.setPadding(new Insets(5,0,0,0));
         container = new VBox(prepBtns, resetAndTF);
         container.setPadding(new Insets(-10,0,0,0));
-        textField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue.matches("\\d*")) { // remove non-numbers
                     textField.setText(newValue.replaceAll("[^\\d]", ""));
                 } if (newValue.matches("0*")) {
@@ -72,7 +59,6 @@ class PrepFactory {
                 } catch (NumberFormatException nfe) {
                     System.out.println("parsing empty string...");
                 }
-            }
         });
     }
 
@@ -82,7 +68,7 @@ class PrepFactory {
         return reset;
     }
 
-    public VBox getContainer() {
+    VBox getContainer() {
         return container;
     }
 

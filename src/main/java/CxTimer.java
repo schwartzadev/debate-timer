@@ -79,8 +79,7 @@ public class CxTimer extends Application {
         primaryStage.show();
     }
 
-     private ChangeListener timerCL = new ChangeListener<Number>() { // make lambda
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+     private ChangeListener timerCL = (observable, oldValue, newValue) -> {
             if (newValue.equals(30)) {
                 label.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
             } else if (newValue.equals(0)) {
@@ -88,7 +87,7 @@ public class CxTimer extends Application {
             }
             DateFormat df = new SimpleDateFormat("mm:ss");
             label.setText(df.format((timeSeconds.getValue() * 1000)));
-        }};
+        };
 
     private Button resetFactory() {
         Button reset = new Button("reset");

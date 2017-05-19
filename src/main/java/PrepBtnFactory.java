@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat;
                  btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
                  break;
          }
-//         this.recolor();
      }
 
     Button make() {
@@ -96,16 +95,6 @@ import java.text.SimpleDateFormat;
         tl.stop();
     }
 
-    void recolor() {
-        switch (team) {
-            case AFF:
-                btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
-                break;
-            case NEG:
-                btn.setStyle("-fx-background-color: #7C1A1A; -fx-text-fill: white;");
-                break;
-        }
-    }
      void colorAff() {
          btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
      }
