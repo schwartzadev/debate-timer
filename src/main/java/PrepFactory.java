@@ -44,16 +44,14 @@ class PrepFactory {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue.matches("\\d*")) { // remove non-numbers
                     textField.setText(newValue.replaceAll("[^\\d]", ""));
-                } if (newValue.matches("0*")) {
+                } if (newValue.matches("0*")) { // remove "0", "00", etc.
                     textField.setText(newValue.replaceAll("0", ""));
-                }
-                if (textField.getText().length() > 2) { // max 2 digits
+                } if (textField.getText().length() > 2) { // max 2 digits
                     String s = textField.getText().substring(0, 2);
                     textField.setText(s);
                 }
                 try {
                     int num = Integer.parseInt(textField.getText());
-                    System.out.println(num);
                     aff.changeStartValue(num);
                     neg.changeStartValue(num);
                 } catch (NumberFormatException nfe) {
