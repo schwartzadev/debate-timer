@@ -1,5 +1,3 @@
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,7 +19,7 @@ class PrepFactory {
         Button prepReset = resetFactory();
         textField = new TextField();
         textField.setMaxSize(30,10);
-        textField.setText("5");
+        textField.setText(Integer.toString(length/60));
         textField.setFont(Font.font("Arial", FontWeight.NORMAL, 10));
         HBox prepBtns = new HBox(aff.make(), neg.make());
         prepBtns.setSpacing(30);

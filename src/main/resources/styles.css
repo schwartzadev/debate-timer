@@ -6,9 +6,11 @@
     -fx-border-insets: 1em;
 }
 
-.label {
+.timer {
    -fx-font: bold 5em "Arial";
    -fx-padding: 0 10 0 10;
+   -fx-text-fill: black;
+   -fx-background-color: white;
 }
 
 .reset {

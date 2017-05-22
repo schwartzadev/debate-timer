@@ -5,14 +5,12 @@ import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -29,7 +27,7 @@ public class CxTimer extends Application {
     }
 
     private Timeline timeline;
-    private Label label = new Label();
+    private Button speechTimer = new Button("00:00");
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(0);
 
     @Override
@@ -44,7 +42,7 @@ public class CxTimer extends Application {
             npe.printStackTrace();
         }
         primaryStage.getIcons().add(new Image("icon.png"));
-        timeSeconds.addListener(timerCL); // add listener to time var for label
+        timeSeconds.addListener(timerCL); // add listener to time var for speechTimer
         Button timerReset = resetFactory();
         timerReset.setOnAction((event) -> {
             try {
@@ -53,10 +51,10 @@ public class CxTimer extends Application {
                 // do nothing -- should only happen is timeline DNE
             }
             timeSeconds.setValue(0);
-            label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
+            speechTimer.setStyle("-fx-text-fill: black; -fx-background-color: white;");
         });
-        label.setText("00:00"); // init label with text
-        label.setAlignment(Pos.TOP_CENTER);
+        speechTimer.setAlignment(Pos.TOP_CENTER);
+        speechTimer.getStyleClass().add("timer");
 
         VBox btns = new VBox(buttonFactory(8, "C"), buttonFactory(5, "R"), buttonFactory(3, "CX")); // box for the buttons
         btns.setSpacing(12);
@@ -65,7 +63,7 @@ public class CxTimer extends Application {
         PrepFactory prepFactory = new PrepFactory(300);
         VBox prep = prepFactory.getContainer();
 
-        VBox labelBox = new VBox(label, timerReset, prep); // box for label, reset button
+        VBox labelBox = new VBox(speechTimer, timerReset, prep); // box for speechTimer, reset button
         HBox hbox = new HBox(btns, labelBox); // box for the boxes
 
         root.getChildren().addAll(hbox);
@@ -81,12 +79,12 @@ public class CxTimer extends Application {
 
      private ChangeListener timerCL = (observable, oldValue, newValue) -> {
             if (newValue.equals(30)) {
-                label.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
+                speechTimer.setStyle("-fx-text-fill: red;"); // make text red for last 30 seconds
             } else if (newValue.equals(0)) {
-                label.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+                speechTimer.setStyle("-fx-text-fill: white; -fx-background-color: red;");
             }
             DateFormat df = new SimpleDateFormat("mm:ss");
-            label.setText(df.format((timeSeconds.getValue() * 1000)));
+            speechTimer.setText(df.format((timeSeconds.getValue() * 1000)));
         };
 
     private Button resetFactory() {
@@ -101,8 +99,8 @@ public class CxTimer extends Application {
         button1.setMaxWidth(Double.MAX_VALUE);
         final int time = (int)t*60;
         button1.setOnAction((event) -> {
-            label.setStyle("-fx-text-fill: black; -fx-background-color: white;");
-            label.setTextFill(Color.BLACK);
+            speechTimer.setStyle("-fx-text-fill: black; -fx-background-color: white;");
+            speechTimer.setTextFill(Color.BLACK);
             if (timeline != null) {
                 timeline.stop();
             }
