@@ -69,21 +69,28 @@ import java.text.SimpleDateFormat;
 
     Button setButtonClickAction(Button btn) {
         btn.setOnAction((event) -> {
-            System.out.println("prep btn clicked");
             if (integerProperty.getValue() == time || isCountdownStarted) { // starts countdown if it hasn't been started
-                integerProperty.set(count);
-                timeline.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(count),
-                                new KeyValue(integerProperty, 0)));
-                isCountdownStarted = false;
-                timeline.play();
+                startCountdown();
             } else { // stop countdown if already started
-                count = integerProperty.intValue();
-                timeline.stop();
-                isCountdownStarted = true;
+                stopCountdown();
             }
         });
         return btn;
+    }
+
+    void stopCountdown() {
+        count = integerProperty.intValue();
+        timeline.stop();
+        isCountdownStarted = true;
+    }
+
+    void startCountdown() {
+        integerProperty.set(count);
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(count),
+                        new KeyValue(integerProperty, 0)));
+        isCountdownStarted = false;
+        timeline.play();
     }
 
     void resetValue() {
