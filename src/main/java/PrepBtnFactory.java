@@ -4,9 +4,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 import java.text.DateFormat;
@@ -18,17 +16,21 @@ import java.text.SimpleDateFormat;
         NEG
     }
 
+    private String affFormat = "-fx-text-fill: white; -fx-background-color: #0050FF;";
+    private String negFormat = "-fx-text-fill: white; -fx-background-color: red;";
+
+
     private Team team;
-    private boolean bool = false;
+    private boolean isCountdownStarted = false;
     private int count;
-    private int t;
+    private int time;
     private DateFormat df = new SimpleDateFormat("mm:ss");
     private Button btn = new Button();
-    private Timeline tl = new Timeline();
-    private IntegerProperty ip = new SimpleIntegerProperty(0);
+    private Timeline timeline = new Timeline();
+    private IntegerProperty integerProperty = new SimpleIntegerProperty(0);
 
      PrepBtnFactory(int t, Team team) {
-         this.t = t;
+         this.time = t;
          switch (team) {
              case AFF:
                  btn.setStyle("-fx-background-color: #152E66; -fx-text-fill: white;");
@@ -40,59 +42,72 @@ import java.text.SimpleDateFormat;
      }
 
     Button make() {
-        ip.setValue(t);
-        count = t;
+        integerProperty.setValue(time);
+        count = time;
         btn.prefWidth(20);
-        btn.setText(df.format(ip.getValue()*1000));
+        btn.setText(df.format(integerProperty.getValue()*1000));
         btn.getStyleClass().add("prep");
-        ChangeListener prepCL = (ChangeListener<Number>) (observable, oldValue, newValue) -> {
+        ChangeListener prepChangeListener = (ChangeListener<Number>) (observable, oldValue, newValue) -> {
             if (newValue.equals(0)) {
                 CxTimer.isRunning = !CxTimer.isRunning;
                 switch (team) {
                     case AFF:
-                        btn.setStyle("-fx-text-fill: white; -fx-background-color: #0050FF;");
+                        btn.setStyle(affFormat);
                         break;
                     case NEG:
-                        btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+                        btn.setStyle(negFormat);
                         break;
                 }
             }
-            DateFormat df = new SimpleDateFormat("mm:ss");
-            btn.setText(df.format((ip.getValue() * 1000)));
+            DateFormat dateFormat = new SimpleDateFormat("mm:ss");
+            btn.setText(dateFormat.format((integerProperty.getValue() * 1000)));
         };
 
-        ip.addListener(prepCL);
+        integerProperty.addListener(prepChangeListener);
+        return setButtonClickAction(btn);
+    }
+
+    Button setButtonClickAction(Button btn) {
         btn.setOnAction((event) -> {
-            if (ip.getValue() == t || bool) { // make if timeline is not running
-                ip.set(count);
-                tl.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(count),
-                                new KeyValue(ip, 0)));
-                bool = false;
-                tl.play();
-            } else {
-                count = ip.intValue();
-                tl.stop();
-                bool = true;
+            if (integerProperty.getValue() == time || isCountdownStarted) { // starts countdown if it hasn't been started
+                startCountdown();
+            } else { // stop countdown if already started
+                stopCountdown();
             }
         });
         return btn;
     }
 
+    void stopCountdown() {
+        count = integerProperty.intValue();
+        timeline.stop();
+        isCountdownStarted = true;
+    }
+
+    void startCountdown() {
+        integerProperty.set(count);
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(count),
+                        new KeyValue(integerProperty, 0)));
+        isCountdownStarted = false;
+        timeline.play();
+    }
+
     void resetValue() {
-        ip.setValue(t);
+        integerProperty.setValue(time);
+        // todo: make this actually reset the prep buttons
     }
 
     void changeStartValue(int length) {
          this.stop();
-         t = length*60;
+         time = length*60;
          count = length*60;
-         ip.setValue(length*60);
+         integerProperty.setValue(length*60);
          this.make();
     }
 
     void stop() {
-        tl.stop();
+        timeline.stop();
     }
 
      void colorAff() {
