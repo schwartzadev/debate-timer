@@ -45,21 +45,21 @@ import java.text.SimpleDateFormat;
         btn.prefWidth(20);
         btn.setText(df.format(ip.getValue()*1000));
         btn.getStyleClass().add("prep");
-        ChangeListener prepCL = new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (newValue.equals(0)) {
-                    switch (team) {
-                        case AFF:
-                            btn.setStyle("-fx-text-fill: white; -fx-background-color: #0050FF;");
-                            break;
-                        case NEG:
-                            btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
-                            break;
-                    }
+        ChangeListener prepCL = (ChangeListener<Number>) (observable, oldValue, newValue) -> {
+            if (newValue.equals(0)) {
+                CxTimer.isRunning = !CxTimer.isRunning;
+                switch (team) {
+                    case AFF:
+                        btn.setStyle("-fx-text-fill: white; -fx-background-color: #0050FF;");
+                        break;
+                    case NEG:
+                        btn.setStyle("-fx-text-fill: white; -fx-background-color: red;");
+                        break;
                 }
-                DateFormat df = new SimpleDateFormat("mm:ss");
-                btn.setText(df.format((ip.getValue() * 1000)));
-            }};
+            }
+            DateFormat df = new SimpleDateFormat("mm:ss");
+            btn.setText(df.format((ip.getValue() * 1000)));
+        };
 
         ip.addListener(prepCL);
         btn.setOnAction((event) -> {

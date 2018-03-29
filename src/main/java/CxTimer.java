@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -29,6 +28,7 @@ public class CxTimer extends Application {
     private Timeline timeline;
     private Button speechTimer = new Button("00:00");
     private IntegerProperty timeSeconds = new SimpleIntegerProperty(0);
+    static boolean isRunning = false;
 
     @Override
     public void start(Stage primaryStage) {
