@@ -67,15 +67,19 @@ class PrepFactory {
                 String s = textField.getText().substring(0, 2);
                 textField.setText(s);
             }
-            try {
-                int num = Integer.parseInt(textField.getText());
-                aff.changeStartValue(num);
-                neg.changeStartValue(num);
-            } catch (NumberFormatException nfe) {
-                // bad input - NaN
-            }
+            updateTimerDurations();
         });
         return textField;
+    }
+
+    void updateTimerDurations() {
+        try {
+            int num = Integer.parseInt(textField.getText());
+            aff.changeStartValue(num);
+            neg.changeStartValue(num);
+        } catch (NumberFormatException nfe) {
+            // bad input - NaN
+        }
     }
 
     private Button resetFactory() {
